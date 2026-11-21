@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt")
 const generatetoken = require("../utils/token")
 
 const registerUser = async(req, res) => {
-    let {username, email, password} = req.body
+    let {name, email, password} = req.body
     let user = await userModel.findOne({email})
 
     if(user) return res.send("user already exist")
@@ -12,37 +12,49 @@ const registerUser = async(req, res) => {
     bcrypt.genSalt(10, (err, salt)=>{
         bcrypt.hash(password, salt, async(err, hash)=>{
             const user = await userModel.create({
-            username,
+            name,
             email,
             password: hash
-    })
+        })
+        const token = generatetoken(user)
+        res.cookie("token", token)
+        res.json(user)
     
-    res.cookie("token", token)
-    res.json(user)
         })
     })
     
 }
 
 const loginUser = async(req, res) => {
-    let {username, email, password} = req.body
+    let {email, password} = req.body
+
     let user = await userModel.findOne({email})
+
     if(!user) return res.send("user doesnt exist")
 
-    
-    bcrypt.compare(password, user.password, (err, result)=>{
-        if(result === true){
+    bcrypt.compare(password, user.password, (err, result) => {
+        if(err) return res.send("Something went wrong")
+
+        if(result) {
             let token = generatetoken(user)
-            res.cookie("token", token)
-            return res.send("Login successful")
+
+            res.cookie("token", token, 
+                
+            )
+
+            return res.redirect("/shop")
+        }
+        else {
+            return res.send("Wrong password")
         }
     })
 }
 
-const logout = ()=>{
+const logoutuser = (req, res)=>{
+    res.cookie("")
     return(
-        res.cookie("")
+        res.redirect(`${process.env.frontend}/`)
     )
 }
 
-module.exports = { registerUser, loginUser }
+module.exports = { registerUser, loginUser, logoutuser }

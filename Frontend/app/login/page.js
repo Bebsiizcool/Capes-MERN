@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const login = process.env.NEXT_PUBLIC_API_URL
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -29,14 +30,15 @@ export default function LoginPage() {
     setLoading(true);
     try {
       // Change this URL to your own login endpoint
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(`${login}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+         credentials: "include",
         body: JSON.stringify(form),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.message || "Wrong email or password.");
-      router.push("/");
+      router.push("/shop");
     } catch (err) {
       setServerError(err.message);
     } finally {
@@ -62,7 +64,7 @@ export default function LoginPage() {
           <div>
             <label htmlFor="email" className="mb-1.5 block text-sm font-medium">Email</label>
             <input
-              id="email" type="email" autoComplete="email" placeholder="you@example.com"
+              id="email" name="email" type="email" autoComplete="email" placeholder="you@example.com"
               value={form.email} onChange={set("email")}
               aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-err" : undefined}
               className={`${input} ${errors.email ? "border-red-400" : "border-white/20"}`}
@@ -74,7 +76,7 @@ export default function LoginPage() {
             <label htmlFor="password" className="mb-1.5 block text-sm font-medium">Password</label>
             <div className="relative">
               <input
-                id="password" type={showPw ? "text" : "password"} autoComplete="current-password"
+                id="password" type={showPw ? "text" : "password"} autoComplete="current-password" name="password"
                 placeholder="Your password"
                 value={form.password} onChange={set("password")}
                 aria-invalid={!!errors.password} aria-describedby={errors.password ? "pw-err" : undefined}

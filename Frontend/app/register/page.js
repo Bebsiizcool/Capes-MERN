@@ -22,6 +22,7 @@ export default function RegisterPage() {
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  const regback = process.env.NEXT_PUBLIC_API_URL
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -35,7 +36,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       // Change this URL to your own register endpoint
-      const res = await fetch("/api/auth/register", {
+      const res = await fetch(`${regback}/auth/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
@@ -69,7 +70,7 @@ export default function RegisterPage() {
           <div>
             <label htmlFor="name" className="mb-1.5 block text-sm font-medium">Name</label>
             <input
-              id="name" type="text" autoComplete="name" placeholder="Your full name" name="username"
+              id="name" type="text" autoComplete="name" placeholder="Your full name" name="name"
               value={form.name} onChange={set("name")}
               aria-invalid={!!errors.name} aria-describedby={errors.name ? "name-err" : undefined}
               className={`${input} ${errors.name ? "border-red-400" : "border-white/20"}`}
