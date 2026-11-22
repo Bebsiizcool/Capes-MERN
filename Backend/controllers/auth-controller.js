@@ -3,6 +3,7 @@ const userModel = require("../models/users")
 const bcrypt = require("bcrypt")
 const generatetoken = require("../utils/token")
 
+
 const registerUser = async(req, res) => {
     let {name, email, password} = req.body
     let user = await userModel.findOne({email})
@@ -38,23 +39,32 @@ const loginUser = async(req, res) => {
         if(result) {
             let token = generatetoken(user)
 
-            res.cookie("token", token, 
-                
-            )
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: false, // Localhost HTTP development
+                sameSite: "lax",
+                path: "/"
+            })
 
-            return res.redirect("/shop")
+            return res.json({ message: "Login successful" })
         }
         else {
-            return res.send("Wrong password")
+            return res.redirect(`${process.env.frontend}/`)
         }
     })
 }
 
-const logoutuser = (req, res)=>{
-    res.cookie("")
-    return(
-        res.redirect(`${process.env.frontend}/`)
-    )
+const logoutuser = (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        path: "/"
+    })
+
+    return res.status(200).json({
+        message: "Logged out successfully"
+    })
 }
 
 module.exports = { registerUser, loginUser, logoutuser }

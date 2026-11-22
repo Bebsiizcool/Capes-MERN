@@ -6,6 +6,7 @@ const landingpage = require("./routes/landingpage")
 const auth = require("./routes/auth")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
+const shop = require("./routes/shop")
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -17,6 +18,7 @@ app.use(cors({
 
 app.use("/", landingpage)
 app.use("/auth", auth)
+app.use("/shop", shop)
 
 
 app.listen(3001)

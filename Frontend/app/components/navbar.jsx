@@ -86,7 +86,7 @@ export default function GlassNavbar({
               className={`rounded-lg px-4 py-2 text-sm font-semibold text-[#1a1208] transition hover:-translate-y-0.5 hover:brightness-110 ${focus}`}
               style={{ background: accent }}
             >
-              Shop Now
+              <a href="/shop">Shop Now</a>
             </button>
           </div>
 
