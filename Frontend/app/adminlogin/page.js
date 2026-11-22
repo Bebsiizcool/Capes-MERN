@@ -3,6 +3,7 @@
 
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
+import { pass } from "three/tsl"
 
 const AdminLogin = () => {
 
@@ -12,11 +13,36 @@ const AdminLogin = () => {
     const [password, setPassword] = useState("")
 
     const handleLogin = async (e) => {
-        e.preventDefault()
+    e.preventDefault()
 
-        // Connect your backend login API here
-        console.log({ email, password })
+    try {
+        console.log("Sending request...")
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/auth/adminlogin`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            }
+        )
+
+        console.log("Status:", res.status)
+
+        const data = await res.json()
+
+        console.log("Response:", data)
+
+        if (res.ok && data.success) {
+            router.push("/admin")
+        }
+
+    } catch (error) {
+        console.log("Fetch failed:", error)
     }
+}
 
     return (
         <div className="min-h-screen bg-[#09090b] flex items-center justify-center px-4">

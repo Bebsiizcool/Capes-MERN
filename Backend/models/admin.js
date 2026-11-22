@@ -3,12 +3,12 @@ const mongoose = require("mongoose")
 const adminModel = mongoose.Schema({
    
     email: {
-        value: String,
+        type: String,
         required: true
     },
 
     password: {
-        value: String,
+        type: String,
         required: true
     }
 })
